@@ -32,7 +32,7 @@ bool linear_example_check_correction(val result, val prediction) {
   return b_result == b_prediction;
 }
 
-float simulation(linear_regression *linear) {
+float simulation(linear_regression *linear, const char *test_file) {
   FILE *fp;
   clock_t t;
   char time[20];
@@ -45,7 +45,8 @@ float simulation(linear_regression *linear) {
 
   set_random_weights(linear->layer_list, modula);
 
-  fp = fopen("test.output", "r");
+  // fp = fopen("test.output", "r");
+  fp = fopen(test_file, "r");
 
   while (fscanf(fp, "%s %s %d %d %d", time, op_type, &io_time, &block_no,
                 &size) != EOF) {
@@ -104,15 +105,23 @@ float simulation(linear_regression *linear) {
          ((iter - num_train_samples / linear->batch_size) * linear->batch_size);
 }
 
-int main(void) {
+int main(int argc, char* argv[]) {
   int num_run = 100;
   linear_regression *linear = build_linear_regression(0.03, 10, 0.99, 2);
   linear->check_correctness = &linear_example_check_correction;
 
+  // default test file
+  char *test_file = "../dataset/fio_io_scheduler_dataset.output";
+  if (argc > 1) {
+    test_file = argv[1];
+  }
+
+  printf("Use test file %s\n", test_file);
+
   srand(time(0));
 
   for (int i = 0; i < num_run; i++) {
-    float current_acc = simulation(linear);
+    float current_acc = simulation(linear, test_file);
     reset_linear_regression(linear);
     iter = 0;
     acc_sum += current_acc;

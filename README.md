@@ -56,7 +56,11 @@ cd dependencies
 
 # Clone repositories
 git clone https://github.com/google/benchmark.git
+
+cd benchmark
+# NOTE: clone inside benchmark
 git clone https://github.com/google/googletest.git
+cd ..
 
 # Build google/benchmark
 cd benchmark
@@ -65,9 +69,10 @@ cd build
 cmake -DCMAKE_BUILD_TYPE=Release ../
 make
 sudo make install
+cd ..
 
 # Build google/googletest
-cd ../googletest
+cd googletest
 mkdir build
 cd build
 cmake -DCMAKE_BUILD_TYPE=Release ../
